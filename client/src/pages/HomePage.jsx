@@ -1,7 +1,7 @@
 import React from "react";
 import { useContext, useEffect, useState } from "react";
 import AuthContext from "../context/AuthContext";
-import { listProducts, listOrderProducts, listProfiles } from "../api/use.api";
+import { listProducts } from "../api/use.api";
 import SmallProductCard from "../components/SmallProductCard";
 import Cart from "./Cart";
 // import ProductFormPage from "./ProductFormPage";
@@ -9,6 +9,7 @@ import Cart from "./Cart";
 const HomePage = () => {
     const { tokens } = useContext(AuthContext);
     const [products, setProducts] = useState(null);
+    
 
     useEffect(() => {
         listProducts(tokens.access).then((data) => {
@@ -18,15 +19,15 @@ const HomePage = () => {
 
     return (
         <div>
+            <Cart/>
             {products && (
                 <div>
                     <strong>Available Products:</strong>
-                    <Cart products={products}/>
-                    {/* <ul className="grid grid-cols-2 place-items-center max-w-fit">
+                    <ul className="grid grid-cols-2 place-items-center max-w-fit">
                         {products.map((product) => (
                             <SmallProductCard key={product.id} product={product} />
                         ))}
-                    </ul> */}
+                    </ul>
                 </div>
             )}
         </div>

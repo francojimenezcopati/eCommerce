@@ -1,11 +1,28 @@
-import '../Cart.css'
+import "../Cart.css";
 import { useId } from "react";
-import SmallProductCard from "../components/SmallProductCard";
 import { CartIcon, ClearCartIcon } from "../utils/Icons";
+import { THUMBNAIL_PREFIX } from "../constants/constants";
+import { useCart } from "../hooks/useCart";
 
-const Cart = ({products}) => {
+function CartItem({ thumbnail, price, title, quantity, addToCart }) {
+    return (
+        <li>
+            <img src={`${THUMBNAIL_PREFIX}${thumbnail}`} alt={title} />
+            <div>
+                <strong>{title}</strong> - ${price}
+            </div>
+
+            <footer>
+                <small>Qty: {quantity}</small>
+                <button onClick={addToCart}>+</button>
+            </footer>
+        </li>
+    );
+}
+
+const Cart = () => {
     const cartCheckboxId = useId();
-    console.log(products);
+    const { addToCart, cart, clearCart } = useCart();
 
     return (
         <>
@@ -16,15 +33,12 @@ const Cart = ({products}) => {
 
             <aside className="cart">
                 <ul>
-                    {/* {cart.map((product) => (
+                    {cart.map((product) => (
                         <CartItem key={product.id} addToCart={() => addToCart(product)} {...product} />
-                    ))} */}
-                    {products.map((product) => (
-                        <SmallProductCard key={product.id} product={product} />
                     ))}
                 </ul>
 
-                <button onClick={() => {console.log('a');}}>
+                <button onClick={clearCart}>
                     <ClearCartIcon />
                 </button>
             </aside>

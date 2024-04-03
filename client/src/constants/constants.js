@@ -1,0 +1,1 @@
+export const THUMBNAIL_PREFIX = "http://localhost:8000"
