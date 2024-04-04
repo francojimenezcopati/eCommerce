@@ -6,6 +6,20 @@
     right: 0px;
     top: 0px;
     width: 200px;
+    overflow-y: auto;
+}
+
+.cart::-webkit-scrollbar {
+    width: 10px; /* Ancho de la barra de desplazamiento */
+}
+
+.cart::-webkit-scrollbar-track {
+    background: #333; /* Color de fondo de la barra de desplazamiento */
+}
+
+.cart::-webkit-scrollbar-thumb {
+    background: #555; /* Color del pulgar de la barra de desplazamiento */
+    border-radius: 5px; /* Radio de borde del pulgar de la barra de desplazamiento */
 }
 
 .cart img {
@@ -54,4 +68,13 @@
 .cart-button ~ input:checked ~ .cart {
     height: 100%;
     display: block;
+}
+
+#ClearCartIcon {
+    position: fixed;
+    background: #000;
+    bottom: 0px;
+    right: 0px;
+    width: 200px;
+    height: 35px;
 }

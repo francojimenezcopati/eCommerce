@@ -4,7 +4,7 @@ import { CartIcon, ClearCartIcon } from "../utils/Icons";
 import { THUMBNAIL_PREFIX } from "../constants/constants";
 import { useCart } from "../hooks/useCart";
 
-function CartItem({ thumbnail, price, title, quantity, addToCart }) {
+function CartItem({ thumbnail, price, title, quantity, addToCart, removeFromCart }) {
     return (
         <li>
             <img src={`${THUMBNAIL_PREFIX}${thumbnail}`} alt={title} />
@@ -14,6 +14,9 @@ function CartItem({ thumbnail, price, title, quantity, addToCart }) {
 
             <footer>
                 <small>Qty: {quantity}</small>
+                <button disabled={quantity <= 1 ? true : false} onClick={removeFromCart}>
+                    -
+                </button>
                 <button onClick={addToCart}>+</button>
             </footer>
         </li>
@@ -22,7 +25,7 @@ function CartItem({ thumbnail, price, title, quantity, addToCart }) {
 
 const Cart = () => {
     const cartCheckboxId = useId();
-    const { addToCart, cart, clearCart } = useCart();
+    const { addToCart, cart, clearCart, removeFromCart } = useCart();
 
     return (
         <>
@@ -31,16 +34,18 @@ const Cart = () => {
             </label>
             <input id={cartCheckboxId} type="checkbox" hidden />
 
-            <aside className="cart">
+            <aside className="cart ">
                 <ul>
                     {cart.map((product) => (
-                        <CartItem key={product.id} addToCart={() => addToCart(product)} {...product} />
+                        <CartItem key={product.id} removeFromCart={() => removeFromCart(product)} addToCart={() => addToCart(product)} {...product} />
                     ))}
                 </ul>
 
-                <button onClick={clearCart}>
-                    <ClearCartIcon />
-                </button>
+                <div className="grid" id="ClearCartIcon">
+                    <button onClick={clearCart}  className="place-self-center">
+                        <ClearCartIcon />
+                    </button>
+                </div>
             </aside>
         </>
     );
