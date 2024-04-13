@@ -1,4 +1,8 @@
+import { useContext } from "react";
+import { useEffect } from "react";
 import { useReducer, createContext } from "react";
+import { getOrderProducts } from "../api/use.api";
+import AuthContext from "./AuthContext";
 
 export const CartContext = createContext();
 
@@ -6,6 +10,7 @@ const CART_ACTION_TYPES = {
     ADD_TO_CART: "ADD_TO_CART",
     REMOVE_FROM_CART: "REMOVE_FROM_CART",
     CLEAR_CART: "CLEAR_CART",
+    INITIALIZE_CART: "INITIALIZE_CART",
 };
 
 const initialState = [];
@@ -57,6 +62,10 @@ const reducer = (state, action) => {
             return newState;
         }
 
+        case CART_ACTION_TYPES.INITIALIZE_CART: {
+            return payload
+        }
+
         case CART_ACTION_TYPES.CLEAR_CART: {
             return initialState;
         }
@@ -67,7 +76,14 @@ const reducer = (state, action) => {
 };
 
 export const CartProvider = ({ children }) => {
+    const { tokens } = useContext(AuthContext);
     const [state, dispatch] = useReducer(reducer, initialState);
+
+    useEffect(() => {
+        if(tokens){
+            getOrderProducts(tokens.access).then(cart => initializeCart(cart))
+        }
+    }, [tokens])
 
     const addToCart = (product) =>
         dispatch({
@@ -85,6 +101,8 @@ export const CartProvider = ({ children }) => {
         dispatch({
             type: CART_ACTION_TYPES.CLEAR_CART,
         });
+
+    const initializeCart = (cart) => {dispatch({ type: CART_ACTION_TYPES.INITIALIZE_CART, payload: cart })};
 
     const contextData = {
         addToCart,

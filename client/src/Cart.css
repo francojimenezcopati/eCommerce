@@ -2,6 +2,7 @@
     background: #000;
     display: none;
     padding: 32px;
+    padding-bottom: 0;
     position: fixed;
     right: 0px;
     top: 0px;
@@ -71,10 +72,10 @@
 }
 
 #ClearCartIcon {
-    position: fixed;
+    position: sticky;
     background: #000;
-    bottom: 0px;
-    right: 0px;
-    width: 200px;
+    bottom: 0;
+    left: 0;
+    width: 125px;
     height: 35px;
 }

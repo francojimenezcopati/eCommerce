@@ -3,8 +3,11 @@ import { useId } from "react";
 import { CartIcon, ClearCartIcon } from "../utils/Icons";
 import { THUMBNAIL_PREFIX } from "../constants/constants";
 import { useCart } from "../hooks/useCart";
+import { clearOrder, updateOrderProduct } from "../api/use.api";
+import { useContext } from "react";
+import AuthContext from "../context/AuthContext";
 
-function CartItem({ thumbnail, price, title, quantity, addToCart, removeFromCart }) {
+function CartItem({ thumbnail, price, title, quantity, increaseQuantity, substractQuantity}) {
     return (
         <li>
             <img src={`${THUMBNAIL_PREFIX}${thumbnail}`} alt={title} />
@@ -14,10 +17,10 @@ function CartItem({ thumbnail, price, title, quantity, addToCart, removeFromCart
 
             <footer>
                 <small>Qty: {quantity}</small>
-                <button disabled={quantity <= 1 ? true : false} onClick={removeFromCart}>
+                <button disabled={quantity <= 1 ? true : false} onClick={substractQuantity}>
                     -
                 </button>
-                <button onClick={addToCart}>+</button>
+                <button onClick={increaseQuantity}>+</button>
             </footer>
         </li>
     );
@@ -26,6 +29,23 @@ function CartItem({ thumbnail, price, title, quantity, addToCart, removeFromCart
 const Cart = () => {
     const cartCheckboxId = useId();
     const { addToCart, cart, clearCart, removeFromCart } = useCart();
+    const {tokens} = useContext(AuthContext)
+    const {access} = tokens
+
+    const handleClearCart = () => {
+        clearCart()
+        clearOrder(access).then(data => console.log(data))
+    }
+
+    const handleIncreaseQuantity = (product) => {
+        addToCart(product);
+        updateOrderProduct(product.id, product.quantity+1, access).then(data => console.log(data))
+    };
+
+    const handleSubstractQuantity = (product) => {
+        removeFromCart(product);
+        updateOrderProduct(product.id, product.quantity-1, access).then(data => console.log(data));
+    };
 
     return (
         <>
@@ -34,15 +54,20 @@ const Cart = () => {
             </label>
             <input id={cartCheckboxId} type="checkbox" hidden />
 
-            <aside className="cart ">
+            <aside className="cart">
                 <ul>
                     {cart.map((product) => (
-                        <CartItem key={product.id} removeFromCart={() => removeFromCart(product)} addToCart={() => addToCart(product)} {...product} />
+                        <CartItem
+                            key={product.id}
+                            substractQuantity={() => handleSubstractQuantity(product)}
+                            increaseQuantity={() => handleIncreaseQuantity(product)}
+                            {...product}
+                        />
                     ))}
                 </ul>
 
                 <div className="grid" id="ClearCartIcon">
-                    <button onClick={clearCart}  className="place-self-center">
+                    <button onClick={handleClearCart}  className="place-self-center">
                         <ClearCartIcon />
                     </button>
                 </div>

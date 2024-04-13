@@ -1,10 +1,14 @@
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { THUMBNAIL_PREFIX } from "../constants/constants";
 import { useCart } from "../hooks/useCart";
 import { AddToCartIcon, RemoveFromCartIcon } from "../utils/Icons";
+import AuthContext from '../context/AuthContext'
+import { createOrderProduct, deleteOrderProduct } from "../api/use.api";
 
 const SmallProductCard = ({ product }) => {
     const navigate = useNavigate();
+    const {tokens} = useContext(AuthContext)
     const { addToCart, removeFromCart, cart } = useCart();
 
     const checkProductInCart = (product) => {
@@ -22,9 +26,13 @@ const SmallProductCard = ({ product }) => {
     const isProductInCart = checkProductInCart(product);
     
     const handleAddToCartClick = () => {
-        isProductInCart 
-            ? removeFromCart(product)
-            : addToCart(product)
+        if(isProductInCart){
+            removeFromCart(product)
+            deleteOrderProduct(product.id, tokens.access).then(res => console.log(res))
+        }else{
+            createOrderProduct(product.id, tokens.access).then(res => console.log(res))
+            addToCart(product)
+        }
     };
     
     return (

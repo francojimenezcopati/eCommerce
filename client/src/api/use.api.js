@@ -13,16 +13,16 @@ export const listProducts = async (accessToken) => {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            'Authorization': `Bearer ${accessToken}`
+            Authorization: `Bearer ${accessToken}`,
         },
-    })
+    });
 
     const data = await res.json();
 
     return data;
 };
 
-export const ProductDetails = async (pk) => {
+export const productDetails = async (pk) => {
     const res = await fetch(endpoints_urls.products + `${pk}/`);
     const data = await res.json();
 
@@ -34,27 +34,93 @@ export const ProductDetails = async (pk) => {
 
 // #region OrderProducts
 
-export const listOrderProducts = async (accessToken) => {
+export const getOrderProducts = async (accessToken) => {
     const res = await fetch(endpoints_urls.orderProducts, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            'Authorization': `Bearer ${accessToken}`
+            Authorization: `Bearer ${accessToken}`,
         },
     });
 
     const data = await res.json();
 
-    return data;
+    const orderProducts = [];
+    if (data) {
+        data.map((orderProduct) => {
+            orderProduct.product['quantity'] = orderProduct.quantity
+            orderProducts.push(orderProduct.product);
+        });
+    }
+
+    return orderProducts;
 };
 
-export const OrderProductDetails = async (pk) => {
+export const orderProductDetails = async (pk) => {
     const res = await fetch(endpoints_urls.orderProducts + `${pk}/`);
     const data = await res.json();
 
     console.log(data);
     return data;
 };
+
+export const createOrderProduct = async (productId, accessToken) => {
+    // PORQUE SIEMPRE QUE HACEMOS UNA LLAMADA A ESTA URL CON POST, ES PARA PONER UN NUEVO OrderProduct,
+    // por lo tanto siempre tendra un quantity=1. Es decir, esto solo se llama si el producto NO esta en el carrito.
+    const res = await fetch(endpoints_urls.orderProducts, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ productId }),
+    });
+    const data = await res.json();
+
+    return data;
+};
+
+export const updateOrderProduct = async (productId, quantity, accessToken) => {
+    // Aca se actualiza un order product ya existente, ya sea para sumarle o restarle el quantity
+    const res = await fetch(endpoints_urls.orderProducts + `${productId}/`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ quantity }),
+    });
+    const data = await res.json();
+
+    return data;
+};
+
+export const deleteOrderProduct = async (productId, accessToken) => {
+    const res = await fetch(endpoints_urls.orderProducts + `${productId}/`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+        }
+    });
+    const data = await res.json();
+
+    return data;
+}
+
+export const clearOrder = async (accessToken) => {
+    const res = await fetch(endpoints_urls.orderProducts, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+        }
+    });
+    const data = await res.json();
+
+    return data;
+}
+
 
 // #endregion
 
@@ -68,7 +134,7 @@ export const listProfiles = async () => {
     return data;
 };
 
-export const ProfileDetails = async (pk) => {
+export const profileDetails = async (pk) => {
     const res = await fetch(endpoints_urls.profiles + `${pk}/`);
     const data = await res.json();
 

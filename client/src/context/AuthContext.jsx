@@ -73,7 +73,7 @@ export const AuthProvider = ({ children }) => {
         handleLogout,
     };
 
-    return <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={contextData}>{loading ? null : children}</AuthContext.Provider>;
 };
 
 export default AuthContext;

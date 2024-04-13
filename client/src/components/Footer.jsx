@@ -1,4 +1,6 @@
+// import { useCart } from "../hooks/useCart";
 import "./Footer.css";
+
 
 export function Footer() {
     // const { cart } = useCart();
