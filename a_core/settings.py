@@ -34,7 +34,7 @@ INSTALLED_APPS = [
     'a_users',
     
     'cloudinary_storage',
-    'cloudinary'
+    'cloudinary',
     'rest_framework_simplejwt.token_blacklist',
     'rest_framework',
     'coreapi',
